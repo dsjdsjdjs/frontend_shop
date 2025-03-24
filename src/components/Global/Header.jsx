@@ -35,7 +35,7 @@ const Header = () => {
       <Title>
         <Link to="/">Магазин аксессуаров</Link>
       </Title>
-      <AuthButton onClick={() => {window.location.href = 'http://localhost:5174/login'}}>Авторизация</AuthButton>
+      <AuthButton onClick={() => {window.location.href = 'https://frontend-shop-admin.vercel.app/login'}}>Авторизация</AuthButton>
     </HeaderContainer>
   );
 };
