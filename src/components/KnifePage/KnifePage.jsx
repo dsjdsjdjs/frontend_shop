@@ -37,19 +37,6 @@ const ImagesContainer = styled.div`
     border-radius: 12px;
     object-fit: cover;
   }
-
-  .additional-images {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-
-    img {
-      max-width: 150px;
-      width: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-  }
 `;
 
 const InfoContainer = styled.div`
@@ -78,6 +65,10 @@ const ReviewsContainer = styled.div`
 const ReviewItem = styled.div`
   padding: 1rem;
   border-bottom: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: flex-start;
 
   &:last-child {
     border-bottom: none;
@@ -93,6 +84,32 @@ const ReviewDate = styled.p`
   font-size: 0.875rem;
   color: #94a3b8;
 `;
+
+const ReviewTonality = styled.span`
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  display: inline-block;
+  color: #ffffff;
+  background-color: ${({ tone }) =>
+    tone === "Positive" ? "#4caf50" : tone === "Negative" ? "#f44336" : "#ff9800"};
+`;
+
+const translateTonality = (tonality) => {
+  switch (tonality) {
+    case "Positive":
+      return "Позитивный";
+    case "Negative":
+      return "Негативный";
+    case "Neutral":
+      return "Нейтральный";
+    case null:
+      return "Не определен";
+    default:
+      return tonality;
+  }
+};
 
 const KnifePage = () => {
   const { id } = useParams();
@@ -126,7 +143,6 @@ const KnifePage = () => {
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
             'ngrok-skip-browser-warning': 'true',
-            'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IlRlc3RBZG1pbiIsImVtYWlsIjoidGVzdEFkbWluMTIzQGdtYWlsLmNvbSIsImlzQWRtaW4iOiJ0cnVlIiwiZXhwIjoxNzQyODEyMTgyfQ.Xbic2qiiguwut8OyNd8saKSUBN--RD6IgveGzhSgFiI'
           },
         });
         const filteredReviews = response.data.filter(review => review.accessoryId === parseInt(id));
@@ -154,10 +170,7 @@ const KnifePage = () => {
       <Title>{knife.name}</Title>
       <KnifeInfoContainer>
         <ImagesContainer>
-          <img
-            src={`${knife.photoBase64}`}
-            alt={`Зображення ножа 1`}
-          />
+          <img src={`${knife.photoBase64}`} alt={`Зображення ножа`} />
         </ImagesContainer>
         <InfoContainer>
           <InfoRow>
@@ -175,7 +188,8 @@ const KnifePage = () => {
           reviews.map((review) => (
             <ReviewItem key={review.id}>
               <ReviewText>{review.text}</ReviewText>
-              <ReviewDate>{new Date(review.createdAt).toLocaleDateString()}</ReviewDate>
+              <ReviewTonality tone={review.tonality}>{translateTonality(review.tonality)}</ReviewTonality>
+              <ReviewDate>{new Date(review.createdAt).toLocaleString()}</ReviewDate>
             </ReviewItem>
           ))
         ) : (
